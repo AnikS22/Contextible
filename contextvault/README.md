@@ -22,7 +22,7 @@ Transform your local AI models into personal assistants that truly know you! Con
 
 ```bash
 # 1. Clone Contextible
-git clone https://github.com/AnikS22/contextible.git
+git clone https://github.com/AnikS22/Contextible.git
 cd contextible
 
 # 2. Install dependencies

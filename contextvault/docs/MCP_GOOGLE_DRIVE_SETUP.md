@@ -71,7 +71,7 @@ rclone mount gdrive: ~/GoogleDrive --daemon
 python -m contextvault.cli mcp add \
   --name "google-drive-files" \
   --endpoint "stdio:filesystem-server" \
-  --config '{"root_path": "/Users/aniksahai/Google Drive"}'
+  --config '{"root_path": "/Users/yourusername/Google Drive"}'
 
 # Add Google Drive API connection
 python -m contextvault.cli mcp add \
@@ -111,7 +111,7 @@ curl -X POST http://localhost:11435/api/generate \
 
 ```json
 {
-  "root_path": "/Users/aniksahai/Google Drive",
+  "root_path": "/Users/yourusername/Google Drive",
   "allowed_extensions": [".txt", ".md", ".py", ".js", ".json", ".csv"],
   "max_file_size": "10MB",
   "read_only": false
@@ -208,10 +208,10 @@ python -m contextvault.cli mcp providers
 1. **Permission Denied**
    ```bash
    # Check file permissions
-   ls -la "/Users/aniksahai/Google Drive"
+   ls -la "/Users/yourusername/Google Drive"
    
    # Fix permissions if needed
-   chmod -R 755 "/Users/aniksahai/Google Drive"
+   chmod -R 755 "/Users/yourusername/Google Drive"
    ```
 
 2. **MCP Server Not Starting**

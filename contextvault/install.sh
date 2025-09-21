@@ -28,7 +28,7 @@ fi
 # Clone the repository if not already present
 if [ ! -d "contextible" ]; then
     echo "📥 Cloning Contextible..."
-    git clone https://github.com/AnikS22/contextible.git
+    git clone https://github.com/AnikS22/Contextible.git
 fi
 
 cd contextible
