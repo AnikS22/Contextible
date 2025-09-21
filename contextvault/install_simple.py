@@ -30,18 +30,45 @@ def install_dependencies():
     """Install required packages."""
     print("\n📦 Installing dependencies...")
     try:
-        # Install core dependencies only
+        # Install all required dependencies
         packages = [
+            # Core web framework
             "fastapi==0.104.1",
-            "uvicorn==0.24.0", 
+            "uvicorn==0.24.0",
+            "starlette",  # FastAPI dependency
+            
+            # Database
             "sqlalchemy==2.0.23",
+            
+            # HTTP client
             "httpx==0.25.2",
-            "rich==13.7.0",
+            "aiofiles==23.2.0",
+            
+            # CLI and UI
             "click==8.1.7",
+            "rich==13.7.0",
+            
+            # Configuration and validation
             "pydantic==2.5.0",
             "pydantic-settings==2.1.0",
             "python-dotenv==1.0.0",
-            "aiofiles==23.2.0"
+            
+            # System monitoring (optional)
+            "psutil",
+            
+            # Data processing (optional)
+            "numpy",
+            "pyyaml==6.0.1",
+            
+            # JSON processing
+            "orjson==3.9.10",
+            
+            # Security
+            "passlib[bcrypt]==1.7.4",
+            
+            # Web interface
+            "jinja2==3.1.2",
+            "python-multipart==0.0.6"
         ]
         
         for package in packages:
