@@ -120,9 +120,16 @@ def test_installation():
         print("✅ CLI works")
         
         # Test database
-        from contextvault.database import get_db_context
+        from contextvault.database import get_db_context, check_database_connection
         from contextvault.models.context import ContextEntry
+        
+        # First check if database connection works
+        if not check_database_connection():
+            raise Exception("Database connection failed")
+        
+        # Then test basic query
         with get_db_context() as db:
+            # Just test that we can create a session and query (even if empty)
             db.query(ContextEntry).first()
         print("✅ Database works")
         

@@ -197,9 +197,29 @@ class EnhancedContextVaultCLI:
                     self.handle_command(parts)
                 elif command.startswith("test-"):
                     self.handle_command([command])
+                elif command.startswith("search "):
+                    query = command[7:].strip()
+                    if query:
+                        self.search_context_command([query])
+                    else:
+                        self.ui.show_error_message("Please provide a search query")
+                elif command == "categorize":
+                    self.categorize_command()
+                elif command == "resolve-conflicts":
+                    self.resolve_conflicts_command()
+                elif command == "status":
+                    self.status_command()
                 else:
-                    self.ui.show_error_message(f"Unknown command: {command}")
-                    self.console.print("Type 'help' for available commands", style="yellow")
+                    # Try to handle as a general command
+                    parts = command.split()
+                    if len(parts) > 0:
+                        result = self.handle_command(parts)
+                        if result != 0:
+                            self.ui.show_error_message(f"Unknown command: {command}")
+                            self.console.print("Type 'help' for available commands", style="yellow")
+                    else:
+                        self.ui.show_error_message(f"Unknown command: {command}")
+                        self.console.print("Type 'help' for available commands", style="yellow")
                     
             except KeyboardInterrupt:
                 self.console.print("\n\nGoodbye! 👋", style="yellow")
