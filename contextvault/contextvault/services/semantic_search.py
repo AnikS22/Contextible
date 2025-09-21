@@ -14,6 +14,9 @@ from typing import Dict, List, Optional, Tuple, Any
 import numpy as np
 from sqlalchemy.orm import Session
 
+# Initialize logger early
+logger = logging.getLogger(__name__)
+
 try:
     from sentence_transformers import SentenceTransformer
     SENTENCE_TRANSFORMERS_AVAILABLE = True
@@ -41,8 +44,6 @@ except ImportError:
 
 from ..models.context import ContextEntry
 from ..config import settings
-
-logger = logging.getLogger(__name__)
 
 
 class SemanticSearchService:

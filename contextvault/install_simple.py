@@ -43,6 +43,7 @@ def install_dependencies():
             # HTTP client
             "httpx==0.25.2",
             "aiofiles==23.2.0",
+            "requests",
             
             # CLI and UI
             "click==8.1.7",
@@ -59,6 +60,7 @@ def install_dependencies():
             # Data processing (optional)
             "numpy",
             "pyyaml==6.0.1",
+            "scikit-learn",  # For semantic search fallback
             
             # JSON processing
             "orjson==3.9.10",
