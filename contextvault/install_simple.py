@@ -39,6 +39,7 @@ def install_dependencies():
             "rich==13.7.0",
             "click==8.1.7",
             "pydantic==2.5.0",
+            "pydantic-settings==2.1.0",
             "python-dotenv==1.0.0",
             "aiofiles==23.2.0"
         ]
