@@ -28,10 +28,13 @@ cd contextible
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. One-click setup (makes it seamless!)
+# 3. Verify installation (optional but recommended)
+python verify_installation.py
+
+# 4. One-click setup (makes it seamless!)
 ./setup_seamless.sh
 
-# 4. Test it!
+# 5. Test it!
 # Open Ollama app and ask: "What do you know about me?"
 ```
 
