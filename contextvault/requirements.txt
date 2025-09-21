@@ -10,9 +10,10 @@ alembic==1.13.0
 httpx==0.25.2
 aiofiles==23.2.0
 
-# CLI
+# CLI & Interface
 click==8.1.7
 rich==13.7.0
+pyyaml==6.0.1
 
 # Configuration & Environment
 python-dotenv==1.0.0
@@ -22,38 +23,17 @@ pydantic-settings==2.1.0
 # JSON & Data Processing
 orjson==3.9.10
 
-# Crypto & Security
-cryptography==41.0.8
+# Security (optional - only if needed)
 passlib[bcrypt]==1.7.4
 
-# UUID
-uuid==1.30
-
-# Testing
-pytest==7.4.3
-pytest-asyncio==0.21.1
-httpx==0.25.2
-
-# Semantic Search & Embeddings
-sentence-transformers==2.2.2
-numpy==1.24.3
-torch==2.1.0
-transformers==4.35.0
-
-# Dashboard & Web Interface
+# Web Interface
 jinja2==3.1.2
 python-multipart==0.0.6
 
-# CLI Enhancements
-click==8.1.7
-rich==13.7.0
-pyyaml==6.0.1
+# Semantic Search & Embeddings (optional)
+sentence-transformers==2.2.2
+numpy==1.24.3
 
-# Development
-black==23.11.0
-isort==5.12.0
-flake8==6.1.0
-mypy==1.7.1
-
-# Monitoring & Logging
-structlog==23.2.0
+# Testing (optional)
+pytest==7.4.3
+pytest-asyncio==0.21.1
