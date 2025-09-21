@@ -14,7 +14,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from contextvault.database import get_db_context, Base, engine
-from contextvault.models.users import User, UserRole, UserStatus
+# User models removed - no multi-user support
 from contextvault.models.context_versions import ContextVersion, ChangeType
 from contextvault.models.audit import AuditLog, AuditEventType, ComplianceReport
 from contextvault.models.models import AIModel, ModelProvider, ModelStatus
@@ -38,7 +38,7 @@ def create_enterprise_tables():
         with get_db_context() as db:
             # Check if tables exist by trying to query them
             tables_to_check = [
-                'users', 'context_versions', 'audit_logs', 
+                'context_versions', 'audit_logs', 
                 'compliance_reports', 'ai_models', 'context_relationships'
             ]
             
@@ -66,25 +66,6 @@ def create_test_data():
         logger.info("Creating test data...")
         
         with get_db_context() as db:
-            # Create test user (check if exists first)
-            existing_user = db.query(User).filter(User.username == "test_user").first()
-            if existing_user:
-                test_user = existing_user
-                logger.info(f"✅ Using existing test user: {test_user.username}")
-            else:
-                test_user = User.create_user(
-                    username="test_user",
-                    email="test@example.com",
-                    display_name="Test User",
-                    role=UserRole.USER,
-                    preferences={"theme": "dark"},
-                    context_permissions={"allowed_context_types": ["text", "code"]}
-                )
-                db.add(test_user)
-                db.commit()
-                db.refresh(test_user)
-                logger.info(f"✅ Created test user: {test_user.username}")
-            
             # Create test AI model
             test_model = AIModel(
                 model_id="test-model-1",
@@ -102,7 +83,7 @@ def create_test_data():
             # Create test audit log
             test_audit = AuditLog.create_audit_log(
                 event_type=AuditEventType.SYSTEM_START,
-                user_id=test_user.id,
+                user_id="system",
                 event_data={"system": "enterprise_migration"},
                 ip_address="127.0.0.1",
                 user_agent="migration_script"
@@ -126,10 +107,6 @@ def verify_migration():
         logger.info("Verifying migration...")
         
         with get_db_context() as db:
-            # Check user table
-            user_count = db.query(User).count()
-            logger.info(f"✅ Users table: {user_count} records")
-            
             # Check AI models table
             model_count = db.query(AIModel).count()
             logger.info(f"✅ AI Models table: {model_count} records")
