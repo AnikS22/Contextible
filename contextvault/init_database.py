@@ -54,7 +54,7 @@ def verify_tables():
     try:
         from contextvault.database import get_db_session
         from contextvault.models.context import ContextEntry
-        from contextvault.models.sessions import SessionModel
+        from contextvault.models.sessions import Session
         from contextvault.models.permissions import Permission
         
         print("\n🔍 Verifying database tables...")
@@ -64,7 +64,7 @@ def verify_tables():
             db.query(ContextEntry).first()
             print("✅ context_entries table exists")
             
-            db.query(SessionModel).first()
+            db.query(Session).first()
             print("✅ sessions table exists")
             
             db.query(Permission).first()
