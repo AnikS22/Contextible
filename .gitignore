@@ -1,0 +1,8 @@
+
+# Personal data - never commit
+textvault/conversations.db
+contextvault/conversations.db
+contextvault/injection_logs/
+*.db
+*.log
+*.json

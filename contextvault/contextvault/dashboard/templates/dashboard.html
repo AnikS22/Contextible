@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContextVault Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e5e7;
+        }
+
+        .card h2 {
+            color: #1d1d1f;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status.healthy {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.degraded {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status.unhealthy {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .stat:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #6e6e73;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .context-entry {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #007aff;
+        }
+
+        .context-entry:last-child {
+            margin-bottom: 0;
+        }
+
+        .context-content {
+            margin-bottom: 0.5rem;
+            color: #1d1d1f;
+        }
+
+        .context-meta {
+            font-size: 0.9rem;
+            color: #6e6e73;
+        }
+
+        .context-type {
+            display: inline-block;
+            background: #007aff;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+
+        .btn {
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn.secondary {
+            background: #6c757d;
+        }
+
+        .btn.secondary:hover {
+            background: #545b62;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .loading {
+            text-align: center;
+            color: #6e6e73;
+            font-style: italic;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 ContextVault Dashboard</h1>
+            <p>AI Memory for Local AI Models</p>
+        </div>
+
+        <div class="grid">
+            <!-- System Status -->
+            <div class="card">
+                <h2>📊 System Status</h2>
+                <div class="stat">
+                    <span class="stat-label">Overall Health</span>
+                    <span class="status {{ diagnostics.overall_health }}">{{ diagnostics.overall_health.title() }}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Proxy</span>
+                    <span class="stat-value">{{ '✅ Running' if diagnostics.components.proxy.status == 'healthy' else '❌ Failed' }}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Ollama</span>
+                    <span class="stat-value">{{ '✅ Connected' if diagnostics.components.ollama.status == 'healthy' else '❌ Failed' }}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Database</span>
+                    <span class="stat-value">{{ '✅ Connected' if diagnostics.components.database.status == 'healthy' else '❌ Failed' }}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Last Updated</span>
+                    <span class="stat-value">{{ timestamp[:19] }}</span>
+                </div>
+            </div>
+
+            <!-- Context Statistics -->
+            <div class="card">
+                <h2>📝 Context Statistics</h2>
+                <div class="stat">
+                    <span class="stat-label">Total Entries</span>
+                    <span class="stat-value">{{ context_count }}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Permissions</span>
+                    <span class="stat-value">{{ permission_count }}</span>
+                </div>
+                {% for ctx_type, count in context_by_type.items() %}
+                <div class="stat">
+                    <span class="stat-label">{{ ctx_type.title() }}</span>
+                    <span class="stat-value">{{ count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <h2>⚡ Quick Actions</h2>
+                <a href="/api/status" class="btn">Check Status</a>
+                <a href="/api/context" class="btn">View Context</a>
+                <a href="/api/permissions" class="btn">View Permissions</a>
+                <br>
+                <button onclick="testContextVault()" class="btn secondary">Test AI</button>
+                <button onclick="refreshDashboard()" class="btn secondary">Refresh</button>
+            </div>
+        </div>
+
+        <!-- Recent Context Entries -->
+        <div class="card">
+            <h2>📋 Recent Context Entries</h2>
+            {% if recent_entries %}
+                {% for entry in recent_entries %}
+                <div class="context-entry">
+                    <div class="context-content">{{ entry.content[:100] }}{% if entry.content|length > 100 %}...{% endif %}</div>
+                    <div class="context-meta">
+                        <span class="context-type">{{ entry.context_type }}</span>
+                        <span>{{ entry.source }} • {{ entry.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        {% if entry.access_count > 0 %}
+                        <span>• Accessed {{ entry.access_count }} times</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="loading">No context entries found</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="refreshDashboard()">🔄</button>
+
+    <script>
+        function refreshDashboard() {
+            location.reload();
+        }
+
+        async function testContextVault() {
+            try {
+                const response = await fetch('http://localhost:11435/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'mistral:latest',
+                        prompt: 'What pets do I have?',
+                        stream: false
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert('Test successful!\n\nResponse: ' + data.response.substring(0, 200) + '...');
+                } else {
+                    alert('Test failed: ' + response.status);
+                }
+            } catch (error) {
+                alert('Test failed: ' + error.message);
+            }
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(refreshDashboard, 30000);
+    </script>
+</body>
+</html>

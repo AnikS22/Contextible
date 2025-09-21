@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContextVault - Personal AI Memory Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <h1>ContextVault</h1>
+                </div>
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span class="status-text" id="statusText">Checking...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navigation -->
+            <nav class="sidebar">
+                <ul class="nav-menu">
+                    <li class="nav-item active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="nav-item" data-section="context">
+                        <i class="fas fa-database"></i>
+                        <span>My Context</span>
+                    </li>
+                    <li class="nav-item" data-section="permissions">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Permissions</span>
+                    </li>
+                    <li class="nav-item" data-section="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="section active">
+                    <div class="section-header">
+                        <h2>Dashboard</h2>
+                        <p>Overview of your ContextVault system</p>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <!-- System Status Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-server"></i> System Status</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="status-item">
+                                    <span class="label">ContextVault Server:</span>
+                                    <span class="value" id="serverStatus">Checking...</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="label">Ollama Connection:</span>
+                                    <span class="value" id="ollamaStatus">Checking...</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="label">Context Entries:</span>
+                                    <span class="value" id="contextCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                            </div>
+                            <div class="card-content">
+                                <button class="btn btn-primary" id="startServerBtn">
+                                    <i class="fas fa-play"></i> Start Server
+                                </button>
+                                <button class="btn btn-secondary" id="stopServerBtn">
+                                    <i class="fas fa-stop"></i> Stop Server
+                                </button>
+                                <button class="btn btn-success" id="refreshStatusBtn">
+                                    <i class="fas fa-sync"></i> Refresh Status
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- AI Knowledge Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-robot"></i> What AI Knows About You</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="knowledge-summary" id="knowledgeSummary">
+                                    <p>Loading your context...</p>
+                                </div>
+                                <button class="btn btn-outline" id="viewFullContextBtn">
+                                    <i class="fas fa-eye"></i> View Full Context
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="activity-list" id="activityList">
+                                    <p>No recent activity</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Context Management Section -->
+                <section id="context" class="section">
+                    <div class="section-header">
+                        <h2>My Context</h2>
+                        <p>Manage your personal context entries</p>
+                        <button class="btn btn-primary" id="addContextBtn">
+                            <i class="fas fa-plus"></i> Add Context
+                        </button>
+                    </div>
+
+                    <div class="context-list" id="contextList">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Loading context entries...</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Permissions Section -->
+                <section id="permissions" class="section">
+                    <div class="section-header">
+                        <h2>Permissions</h2>
+                        <p>Control which AI models can access your context</p>
+                    </div>
+
+                    <div class="permissions-grid" id="permissionsGrid">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Loading permissions...</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="section">
+                    <div class="section-header">
+                        <h2>Settings</h2>
+                        <p>Configure ContextVault preferences</p>
+                    </div>
+
+                    <div class="settings-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-plug"></i> Ollama Configuration</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="form-group">
+                                    <label for="ollamaHost">Ollama Host:</label>
+                                    <input type="text" id="ollamaHost" value="localhost" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ollamaPort">Ollama Port:</label>
+                                    <input type="number" id="ollamaPort" value="11434" class="form-input">
+                                </div>
+                                <button class="btn btn-primary" id="testOllamaBtn">
+                                    <i class="fas fa-test-tube"></i> Test Connection
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-cog"></i> ContextVault Settings</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="form-group">
+                                    <label for="serverPort">Server Port:</label>
+                                    <input type="number" id="serverPort" value="8000" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label for="proxyPort">Proxy Port:</label>
+                                    <input type="number" id="proxyPort" value="11435" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="autoStart" checked>
+                                        <span>Auto-start ContextVault on app launch</span>
+                                    </label>
+                                </div>
+                                <button class="btn btn-primary" id="saveSettingsBtn">
+                                    <i class="fas fa-save"></i> Save Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Add Context Modal -->
+        <div id="addContextModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Context Entry</h3>
+                    <button class="modal-close" id="closeModalBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="contextContent">Content:</label>
+                        <textarea id="contextContent" class="form-textarea" placeholder="Describe something about yourself, your preferences, or context that AI should know..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contextType">Type:</label>
+                        <select id="contextType" class="form-select">
+                            <option value="preference">Preference</option>
+                            <option value="note">Note</option>
+                            <option value="event">Event</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contextTags">Tags (comma-separated):</label>
+                        <input type="text" id="contextTags" class="form-input" placeholder="programming, work, personal">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelAddBtn">Cancel</button>
+                    <button class="btn btn-primary" id="saveContextBtn">
+                        <i class="fas fa-save"></i> Save Context
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
