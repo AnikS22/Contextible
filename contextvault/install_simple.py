@@ -120,9 +120,9 @@ def test_installation():
         print("✅ CLI works")
         
         # Test database
-        from contextvault.database import get_db_session
+        from contextvault.database import get_db_context
         from contextvault.models.context import ContextEntry
-        with get_db_session() as db:
+        with get_db_context() as db:
             db.query(ContextEntry).first()
         print("✅ Database works")
         
