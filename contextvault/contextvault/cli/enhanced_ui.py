@@ -476,7 +476,7 @@ class EnhancedContextVaultUI:
         
         # Additional Information
         info_panel = Panel(
-            Text("🔗 Additional Resources:\n\n• GitHub Repository: https://github.com/AnikS22/contextvault\n• Documentation: Available in docs/ folder\n• Issue Tracker: GitHub Issues\n• Community: GitHub Discussions\n\n💡 Tips:\n\n• Use 'contextvault interactive' for a guided experience\n• Run 'contextvault test-all' after setup to verify everything works\n• Check 'contextvault analytics' regularly to monitor system health\n• Use 'contextvault health-check' for detailed diagnostics", style=BRAND_SECONDARY_TEXT),
+            Text("🔗 Additional Resources:\n\n• GitHub Repository: https://github.com/AnikS22/Contextible\n• Documentation: Available in docs/ folder\n• Issue Tracker: GitHub Issues\n• Community: GitHub Discussions\n\n💡 Tips:\n\n• Use 'contextvault interactive' for a guided experience\n• Run 'contextvault test-all' after setup to verify everything works\n• Check 'contextvault analytics' regularly to monitor system health\n• Use 'contextvault health-check' for detailed diagnostics", style=BRAND_SECONDARY_TEXT),
             title="📚 Resources & Tips",
             box=box.ROUNDED
         )

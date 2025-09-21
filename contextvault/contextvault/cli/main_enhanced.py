@@ -405,7 +405,7 @@ class ContextVaultCLI:
                  "• contextvault add \"I'm a Python developer\"\n" +
                  "• contextvault search \"programming\"\n" +
                  "• contextvault status\n\n" +
-                 "For more information, visit: https://github.com/AnikS22/contextvault"),
+                 "For more information, visit: https://github.com/AnikS22/Contextible"),
             title="Help",
             box=box.ROUNDED
         )

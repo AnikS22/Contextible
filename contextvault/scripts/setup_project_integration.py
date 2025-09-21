@@ -8,6 +8,26 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Try to import user configuration, fall back to defaults
+try:
+    from user_config_local import get_user_paths, get_custom_path
+except ImportError:
+    try:
+        from user_config import get_user_paths, get_custom_path
+    except ImportError:
+        # Fallback configuration
+        def get_user_paths():
+            return {
+                "project_root": os.path.expanduser("~/Projects"),
+                "contextible_root": os.path.expanduser("~/Projects/contextible"),
+                "contextvault_root": os.path.expanduser("~/Projects/contextible/contextvault"),
+                "google_drive_path": os.path.expanduser("~/Google Drive"),
+            }
+        
+        def get_custom_path(path_type: str, default: str = None):
+            paths = get_user_paths()
+            return paths.get(path_type, default or "")
+
 def setup_project_context():
     """Set up ContextVault for project-based context management."""
     
@@ -68,7 +88,7 @@ def add_project_context():
             }
         },
         {
-            "content": "I store my project files in /Users/aniksahai/Desktop/Contextive/ and use Git for version control. I prefer detailed commit messages and feature branches.",
+            "content": f"I store my project files in {get_custom_path('project_root', '~/Projects')} and use Git for version control. I prefer detailed commit messages and feature branches.",
             "context_type": "note",
             "source": "project_setup",
             "tags": ["workflow", "git", "file_organization"],
@@ -91,7 +111,7 @@ def add_project_context():
             ]
             
             result = subprocess.run(cmd, capture_output=True, text=True, 
-                                  cwd="/Users/aniksahai/Desktop/Contextive/contextvault")
+                                  cwd=get_custom_path('contextvault_root', '~/Projects/contextible/contextvault'))
             
             if result.returncode == 0:
                 print(f"✅ Added: {context['content'][:50]}...")
@@ -151,7 +171,7 @@ def setup_google_drive():
             ]
             
             result = subprocess.run(cmd, capture_output=True, text=True,
-                                  cwd="/Users/aniksahai/Desktop/Contextive/contextvault")
+                                  cwd=get_custom_path('contextvault_root', '~/Projects/contextible/contextvault'))
             
             if result.returncode == 0:
                 print(f"✅ Added Drive context: {context['content'][:40]}...")
@@ -191,7 +211,7 @@ def setup_cross_model_sharing():
         ]
         
         result = subprocess.run(cmd, capture_output=True, text=True,
-                              cwd="/Users/aniksahai/Desktop/Contextive/contextvault")
+                              cwd=get_custom_path('contextvault_root', '~/Projects/contextible/contextvault'))
         
         if result.returncode == 0:
             print(f"✅ Added cross-model context")
@@ -257,7 +277,7 @@ def test_project_integration():
     try:
         result = subprocess.run([
             sys.executable, "-m", "contextvault.cli", "learning", "stats"
-        ], capture_output=True, text=True, cwd="/Users/aniksahai/Desktop/Contextive/contextvault")
+        ], capture_output=True, text=True, cwd=get_custom_path('contextvault_root', '~/Projects/contextible/contextvault'))
         
         if result.returncode == 0:
             print(result.stdout)
@@ -314,7 +334,7 @@ python -m contextvault.cli mcp enable --connection "google-drive" --model "mistr
 ### File System Access
 ```bash
 # Add local project files
-python -m contextvault.cli context add "My project files are in /Users/aniksahai/Desktop/Contextive/" --type note --tags filepath
+python -m contextvault.cli context add "My project files are in {get_custom_path('project_root', '~/Projects')}" --type note --tags filepath
 ```
 
 ## 🔄 Cross-Model Context Sharing
@@ -378,7 +398,8 @@ python -m contextvault.cli context search "contextvault project"
 Your AI now has complete project memory and can access your entire digital ecosystem!
 """
     
-    with open("/Users/aniksahai/Desktop/Contextive/contextvault/PROJECT_INTEGRATION_GUIDE.md", "w") as f:
+    project_root = get_custom_path('project_root', '~/Projects')
+    with open(f"{project_root}/contextible/contextvault/PROJECT_INTEGRATION_GUIDE.md", "w") as f:
         f.write(guide_content)
     
     print(f"📖 Created PROJECT_INTEGRATION_GUIDE.md")

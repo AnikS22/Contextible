@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+"""
+Example User Configuration for Contextible
+
+Copy this file to user_config_local.py and customize the paths for your system.
+
+Example configurations for different users:
+"""
+
+import os
+from pathlib import Path
+
+# =============================================================================
+# EXAMPLE CONFIGURATIONS
+# =============================================================================
+
+# Example 1: Default user with standard paths
+# PROJECT_ROOT = os.path.expanduser("~/Projects")
+# GOOGLE_DRIVE_PATH = os.path.expanduser("~/Google Drive")
+
+# Example 2: Developer with custom project structure
+# PROJECT_ROOT = os.path.expanduser("~/Development")
+# GOOGLE_DRIVE_PATH = os.path.expanduser("~/Cloud/Google Drive")
+
+# Example 3: User with specific desktop setup
+# PROJECT_ROOT = os.path.expanduser("~/Desktop/MyProjects")
+# GOOGLE_DRIVE_PATH = os.path.expanduser("~/OneDrive")
+
+# =============================================================================
+# YOUR CONFIGURATION (CUSTOMIZE THESE)
+# =============================================================================
+
+# Your project root directory (where you store your projects)
+PROJECT_ROOT = os.path.expanduser("~/Projects")
+
+# Your Contextible installation directory
+CONTEXTIBLE_ROOT = os.path.join(PROJECT_ROOT, "contextible")
+
+# Your ContextVault specific directory
+CONTEXTVAULT_ROOT = os.path.join(CONTEXTIBLE_ROOT, "contextvault")
+
+# Your Google Drive path (if using Google Drive for Desktop)
+GOOGLE_DRIVE_PATH = os.path.expanduser("~/Google Drive")
+
+# Other common paths
+DESKTOP_PATH = os.path.expanduser("~/Desktop")
+DOCUMENTS_PATH = os.path.expanduser("~/Documents")
+DOWNLOADS_PATH = os.path.expanduser("~/Downloads")
+
+# Development paths (alternative to PROJECT_ROOT)
+DEV_ROOT = os.path.expanduser("~/Development")
+
+# =============================================================================
+# ADVANCED CONFIGURATION
+# =============================================================================
+
+# Custom environment variable overrides
+# You can also set these as environment variables:
+# export CONTEXTIBLE_PROJECT_ROOT="~/MyCustomProjects"
+# export CONTEXTIBLE_GOOGLE_DRIVE_PATH="~/CustomDrive"
+
+def get_user_paths():
+    """Get all user-specific paths as a dictionary."""
+    return {
+        "project_root": PROJECT_ROOT,
+        "contextible_root": CONTEXTIBLE_ROOT,
+        "contextvault_root": CONTEXTVAULT_ROOT,
+        "google_drive_path": GOOGLE_DRIVE_PATH,
+        "desktop_path": DESKTOP_PATH,
+        "documents_path": DOCUMENTS_PATH,
+        "downloads_path": DOWNLOADS_PATH,
+        "dev_root": DEV_ROOT,
+    }
+
+def get_custom_path(path_type: str, default: str = None):
+    """Get a custom path, checking environment variables first."""
+    env_var = f"CONTEXTIBLE_{path_type.upper()}"
+    return os.environ.get(env_var, default or get_user_paths().get(path_type, ""))
+
+# =============================================================================
+# SETUP INSTRUCTIONS
+# =============================================================================
+
+"""
+To use this configuration:
+
+1. Copy this file to user_config_local.py:
+   cp user_config_local.py.example user_config_local.py
+
+2. Edit user_config_local.py with your actual paths
+
+3. The system will automatically use your custom paths
+
+4. You can also override paths using environment variables:
+   export CONTEXTIBLE_PROJECT_ROOT="~/MyProjects"
+   export CONTEXTIBLE_GOOGLE_DRIVE_PATH="~/MyDrive"
+"""

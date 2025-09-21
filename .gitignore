@@ -160,3 +160,6 @@ test_*
 validation_report.txt
 injection_logs/
 *.pid
+
+# User-specific configuration (contains personal paths)
+user_config_local.py
