@@ -183,6 +183,36 @@ class LMStudioIntegration(BaseIntegration):
                     return message.get("content")
         
         return None
+    
+    def format_prompt(
+        self,
+        original_prompt: str,
+        context_entries: List[str],
+        template: Optional[str] = None,
+    ) -> str:
+        """
+        Format prompt with injected context for LM Studio.
+        
+        Args:
+            original_prompt: Original user prompt
+            context_entries: List of context entries to inject
+            template: Optional custom template
+            
+        Returns:
+            Formatted prompt with context
+        """
+        if not context_entries:
+            return original_prompt
+        
+        # Use default template if none provided
+        if not template:
+            template = "Context: {context}\n\nUser: {prompt}"
+        
+        # Join context entries
+        context_text = "\n".join(context_entries)
+        
+        # Format the prompt
+        return template.format(context=context_text, prompt=original_prompt)
 
 
 # Global LM Studio integration instance

@@ -3,6 +3,7 @@
 import json
 import uuid
 from datetime import datetime
+from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from sqlalchemy import JSON, DateTime, String, Text, func, Boolean, Float, Integer
