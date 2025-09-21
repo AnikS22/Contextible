@@ -31,9 +31,40 @@ class EnhancedContextVaultCLI:
         self.config_file = Path.home() / ".contextvault" / "config.json"
         self.ui = EnhancedContextVaultUI()
     
+    def ensure_database_initialized(self):
+        """Ensure database is initialized before running CLI."""
+        try:
+            from ..database import check_database_connection, init_database, create_tables
+            from ..models.context import ContextEntry
+            
+            # Check if database exists and has tables
+            try:
+                connection_info = check_database_connection()
+                # Try to query a table to see if it exists
+                from ..database import get_db_session
+                with get_db_session() as db:
+                    db.query(ContextEntry).first()
+                # If we get here, database is working
+                return True
+            except Exception:
+                # Database doesn't exist or tables missing, initialize it
+                self.console.print("🗄️ Initializing database...", style="yellow")
+                init_database()
+                create_tables()
+                self.console.print("✅ Database initialized successfully!", style="green")
+                return True
+                
+        except Exception as e:
+            self.console.print(f"❌ Database initialization failed: {e}", style="red")
+            self.console.print("Please run: python init_database.py", style="yellow")
+            return False
+    
     def run(self, args=None):
         """Main entry point for the CLI."""
         try:
+            # Initialize database if needed
+            self.ensure_database_initialized()
+            
             # Show enhanced banner
             self.ui.show_enhanced_banner()
             

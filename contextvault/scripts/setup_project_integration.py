@@ -22,6 +22,10 @@ except ImportError:
                 "contextible_root": os.path.expanduser("~/Projects/contextible"),
                 "contextvault_root": os.path.expanduser("~/Projects/contextible/contextvault"),
                 "google_drive_path": os.path.expanduser("~/Google Drive"),
+                "desktop_path": os.path.expanduser("~/Desktop"),
+                "documents_path": os.path.expanduser("~/Documents"),
+                "downloads_path": os.path.expanduser("~/Downloads"),
+                "dev_root": os.path.expanduser("~/Development"),
             }
         
         def get_custom_path(path_type: str, default: str = None):
