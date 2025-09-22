@@ -23,27 +23,54 @@ Transform your local AI models into personal assistants that truly know you! Con
 ```bash
 # 1. Clone Contextible
 git clone https://github.com/AnikS22/Contextible.git
-cd contextible
+cd Contextible/contextvault
 
-# 2. Install dependencies
-pip install -r requirements.txt
+# 2. One-command installation
+python install_simple.py
 
-# 3. Verify installation (optional but recommended)
-python verify_installation.py
+# 3. Add some context about yourself
+python contextible.py
+# Type: add "My name is Alex and I'm a Python developer"
+# Type: exit
 
-# 4. One-click setup (makes it seamless!)
-./setup_seamless.sh
+# 4. IMPORTANT: Start the proxy for AI memory (in a NEW terminal)
+ollama serve                    # Make sure Ollama is running
+python scripts/ollama_proxy.py  # Start Contextible proxy
 
-# 5. Test it!
+# 5. Test it! Your AI now remembers you!
 # Open Ollama app and ask: "What do you know about me?"
 ```
 
 **That's it!** Your AI now has persistent memory! 🎉
 
+## ⚠️ IMPORTANT: Starting the Proxy
+
+**Without the proxy, your AI won't remember you!** The proxy is what enables context injection.
+
+### Method 1: Manual Setup
+```bash
+# Terminal 1: Start Ollama
+ollama serve
+
+# Terminal 2: Start Contextible proxy
+cd Contextible/contextvault
+python scripts/ollama_proxy.py
+
+# Terminal 3: Use your AI (Ollama app or curl)
+# Your AI will now remember you!
+```
+
+### Method 2: One-Click Setup
+```bash
+# Run the seamless setup script
+./setup_seamless.sh
+# This handles everything automatically!
+```
+
 ## 📱 How It Works
 
 1. **You chat normally** with Ollama (no settings needed!)
-2. **Contextible intercepts** your conversations
+2. **Contextible intercepts** your conversations via the proxy
 3. **Adds your context** to make responses personalized
 4. **Learns new facts** from every conversation
 5. **Gets smarter** over time

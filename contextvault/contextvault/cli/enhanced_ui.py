@@ -474,6 +474,16 @@ class EnhancedContextVaultUI:
         
         console.print()
         
+        # Proxy Setup Notice
+        proxy_panel = Panel(
+            Text("⚠️  IMPORTANT: To enable AI memory, start the proxy!\n\n• Terminal 1: ollama serve\n• Terminal 2: python scripts/ollama_proxy.py\n• Then use your AI normally - it will remember you!", style="bold " + BRAND_WARNING),
+            title="🤖 Enable AI Memory",
+            box=box.DOUBLE,
+            style=BRAND_WARNING
+        )
+        console.print(Align.center(proxy_panel))
+        console.print()
+        
         # Additional Information
         info_panel = Panel(
             Text("🔗 Additional Resources:\n\n• GitHub Repository: https://github.com/AnikS22/Contextible\n• Documentation: Available in docs/ folder\n• Issue Tracker: GitHub Issues\n• Community: GitHub Discussions\n\n💡 Tips:\n\n• Use 'contextvault interactive' for a guided experience\n• Run 'contextvault test-all' after setup to verify everything works\n• Check 'contextvault analytics' regularly to monitor system health\n• Use 'contextvault health-check' for detailed diagnostics", style=BRAND_SECONDARY_TEXT),
