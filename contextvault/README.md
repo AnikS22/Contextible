@@ -47,7 +47,19 @@ python scripts/ollama_proxy.py  # Start Contextible proxy
 
 **Without the proxy, your AI won't remember you!** The proxy is what enables context injection.
 
-### Method 1: Manual Setup
+### Method 1: Seamless Integration (RECOMMENDED)
+```bash
+# One command - Ollama Dashboard works normally!
+python scripts/seamless_ollama_setup.py
+
+# What this does:
+# - Stops Ollama on port 11434
+# - Starts Ollama on port 11436  
+# - Starts our proxy on port 11434 (Ollama's default)
+# - Ollama Dashboard → port 11434 → gets context injection automatically
+```
+
+### Method 2: Manual Setup
 ```bash
 # Terminal 1: Start Ollama
 ollama serve
@@ -56,15 +68,8 @@ ollama serve
 cd Contextible/contextvault
 python scripts/ollama_proxy.py
 
-# Terminal 3: Use your AI (Ollama app or curl)
-# Your AI will now remember you!
-```
-
-### Method 2: One-Click Setup
-```bash
-# Run the seamless setup script
-./setup_seamless.sh
-# This handles everything automatically!
+# Terminal 3: Use curl (Ollama app won't work)
+curl http://localhost:11435/api/generate -d '{"model": "mistral:latest", "prompt": "What do you know about me?"}'
 ```
 
 ## 📱 How It Works
