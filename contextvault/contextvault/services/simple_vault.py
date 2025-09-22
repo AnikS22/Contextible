@@ -38,7 +38,7 @@ class SimpleVaultService:
                 return {
                     "id": entry.id,
                     "content": entry.content,
-                    "context_type": entry.context_type.value,
+                    "context_type": str(entry.context_type),
                     "source": entry.source,
                     "tags": entry.tags,
                     "user_id": entry.user_id,
@@ -65,7 +65,7 @@ class SimpleVaultService:
                     entries_dict.append({
                         "id": entry.id,
                         "content": entry.content,
-                        "context_type": entry.context_type.value,
+                        "context_type": str(entry.context_type),
                         "source": entry.source,
                         "tags": entry.tags,
                         "user_id": entry.user_id,
@@ -95,7 +95,7 @@ class SimpleVaultService:
                     entries_dict.append({
                         "id": entry.id,
                         "content": entry.content,
-                        "context_type": entry.context_type.value,
+                        "context_type": str(entry.context_type),
                         "source": entry.source,
                         "tags": entry.tags,
                         "user_id": entry.user_id,

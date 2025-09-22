@@ -9,7 +9,6 @@ sqlalchemy==2.0.23
 # HTTP Client
 httpx==0.25.2
 aiofiles==23.2.0
-requests==2.32.5
 
 # CLI & Interface
 click==8.1.7

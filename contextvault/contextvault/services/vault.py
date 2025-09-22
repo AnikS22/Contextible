@@ -36,7 +36,7 @@ class VaultService:
         metadata: Optional[Dict[str, Any]] = None,
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> ContextEntry:
         """
         Save a new context entry to the vault.
         
@@ -50,7 +50,7 @@ class VaultService:
             session_id: Session ID where this context was created
             
         Returns:
-            Dictionary with created context entry data
+            The created ContextEntry
             
         Raises:
             ValueError: If content is empty or too long
@@ -95,17 +95,7 @@ class VaultService:
                     f"Context entry saved: {entry.id}, type={context_type}, length={len(content)}, tags={clean_tags}"
                 )
                 
-                return {
-                    "id": entry.id,
-                    "content": entry.content,
-                    "context_type": entry.context_type.value,
-                    "source": entry.source,
-                    "tags": entry.tags,
-                    "user_id": entry.user_id,
-                    "session_id": entry.session_id,
-                    "created_at": entry.created_at.isoformat(),
-                    "updated_at": entry.updated_at.isoformat()
-                }
+                return entry
                 
             else:
                 # Create new session context (we manage commits)
@@ -128,17 +118,7 @@ class VaultService:
                         f"Context entry saved: {entry.id}, type={context_type}, length={len(content)}, tags={clean_tags}"
                     )
                     
-                    return {
-                        "id": entry.id,
-                        "content": entry.content,
-                        "context_type": entry.context_type.value,
-                        "source": entry.source,
-                        "tags": entry.tags,
-                        "user_id": entry.user_id,
-                        "session_id": entry.session_id,
-                        "created_at": entry.created_at.isoformat(),
-                        "updated_at": entry.updated_at.isoformat()
-                    }
+                    return entry
                 
         except Exception as e:
             logger.error(f"Failed to save context entry: {str(e)}", exc_info=True)
@@ -151,7 +131,7 @@ class VaultService:
         offset: int = 0,
         order_by: str = "created_at",
         order_desc: bool = True,
-    ) -> Tuple[List[Dict[str, Any]], int]:
+    ) -> Tuple[List[ContextEntry], int]:
         """
         Retrieve context entries with filtering.
         
@@ -163,94 +143,78 @@ class VaultService:
             order_desc: Whether to order in descending order
             
         Returns:
-            Tuple of (entries_as_dicts, total_count)
+            Tuple of (entries, total_count)
         """
         filters = filters or {}
         
         try:
-            with get_db_context() as db:
-                query = db.query(ContextEntry)
-                
-                # Apply filters
-                conditions = []
-                
-                # Context type filter
-                if "context_types" in filters and filters["context_types"]:
-                    conditions.append(ContextEntry.context_type.in_(filters["context_types"]))
-                
-                # Tags filter
-                if "tags" in filters and filters["tags"]:
-                    tag_conditions = []
-                    for tag in filters["tags"]:
-                        tag_conditions.append(ContextEntry.tags.contains([tag]))
-                    conditions.append(or_(*tag_conditions))
-                
-                # Source filter
-                if "source" in filters and filters["source"]:
-                    conditions.append(ContextEntry.source.ilike(f"%{filters['source']}%"))
-                
-                # Date range filter
-                if "since" in filters and filters["since"]:
-                    conditions.append(ContextEntry.created_at >= filters["since"])
-                
-                if "until" in filters and filters["until"]:
-                    conditions.append(ContextEntry.created_at <= filters["until"])
-                
-                # User filter
-                if "user_id" in filters and filters["user_id"]:
-                    conditions.append(ContextEntry.user_id == filters["user_id"])
-                
-                # Session filter
-                if "session_id" in filters and filters["session_id"]:
-                    conditions.append(ContextEntry.session_id == filters["session_id"])
-                
-                # Text search
-                if "search" in filters and filters["search"]:
-                    search_term = filters["search"]
-                    search_conditions = [
-                        ContextEntry.content.ilike(f"%{search_term}%"),
-                        ContextEntry.source.ilike(f"%{search_term}%"),
-                    ]
-                    conditions.append(or_(*search_conditions))
-                
-                # Apply all conditions
-                if conditions:
-                    query = query.filter(and_(*conditions))
-                
-                # Get total count before pagination
-                total = query.count()
-                
-                # Apply ordering
-                if hasattr(ContextEntry, order_by):
-                    order_column = getattr(ContextEntry, order_by)
-                    if order_desc:
-                        query = query.order_by(desc(order_column))
-                    else:
-                        query = query.order_by(order_column)
-                
-                # Apply pagination
-                query = query.offset(offset).limit(limit)
-                
-                # Execute query
-                entries = query.all()
-                
-                # Convert to dictionaries
-                entries_dict = []
-                for entry in entries:
-                    entries_dict.append({
-                        "id": entry.id,
-                        "content": entry.content,
-                        "context_type": entry.context_type.value,
-                        "source": entry.source,
-                        "tags": entry.tags,
-                        "user_id": entry.user_id,
-                        "session_id": entry.session_id,
-                        "created_at": entry.created_at.isoformat(),
-                        "updated_at": entry.updated_at.isoformat(),
-                        "access_count": entry.access_count
-                    })
-                
-                return entries_dict, total
+            db = self._get_session()
+            query = db.query(ContextEntry)
+            
+            # Apply filters
+            conditions = []
+            
+            # Context type filter
+            if "context_types" in filters and filters["context_types"]:
+                conditions.append(ContextEntry.context_type.in_(filters["context_types"]))
+            
+            # Tags filter
+            if "tags" in filters and filters["tags"]:
+                tag_conditions = []
+                for tag in filters["tags"]:
+                    tag_conditions.append(ContextEntry.tags.contains([tag]))
+                conditions.append(or_(*tag_conditions))
+            
+            # Source filter
+            if "source" in filters and filters["source"]:
+                conditions.append(ContextEntry.source.ilike(f"%{filters['source']}%"))
+            
+            # Date range filter
+            if "since" in filters and filters["since"]:
+                conditions.append(ContextEntry.created_at >= filters["since"])
+            
+            if "until" in filters and filters["until"]:
+                conditions.append(ContextEntry.created_at <= filters["until"])
+            
+            # User filter
+            if "user_id" in filters and filters["user_id"]:
+                conditions.append(ContextEntry.user_id == filters["user_id"])
+            
+            # Session filter
+            if "session_id" in filters and filters["session_id"]:
+                conditions.append(ContextEntry.session_id == filters["session_id"])
+            
+            # Text search
+            if "search" in filters and filters["search"]:
+                search_term = filters["search"]
+                search_conditions = [
+                    ContextEntry.content.ilike(f"%{search_term}%"),
+                    ContextEntry.source.ilike(f"%{search_term}%"),
+                ]
+                conditions.append(or_(*search_conditions))
+            
+            # Apply all conditions
+            if conditions:
+                query = query.filter(and_(*conditions))
+            
+            # Get total count before pagination
+            total = query.count()
+            
+            # Apply ordering
+            if hasattr(ContextEntry, order_by):
+                order_column = getattr(ContextEntry, order_by)
+                if order_desc:
+                    query = query.order_by(desc(order_column))
+                else:
+                    query = query.order_by(order_column)
+            
+            # Apply pagination
+            query = query.offset(offset).limit(limit)
+            
+            # Execute query
+            entries = query.all()
+            
+            return entries, total
             
         except Exception as e:
             logger.error("Failed to retrieve context", error=str(e), exc_info=True)
@@ -360,7 +324,7 @@ class VaultService:
         offset: int = 0,
         context_types: Optional[List[ContextType]] = None,
         tags: Optional[List[str]] = None,
-    ) -> Tuple[List[Dict[str, Any]], int]:
+    ) -> Tuple[List[ContextEntry], int]:
         """
         Search context entries by content.
         
@@ -372,7 +336,7 @@ class VaultService:
             tags: Filter by tags
             
         Returns:
-            Tuple of (matching_entries_as_dicts, total_count)
+            Tuple of (matching_entries, total_count)
         """
         if not query or not query.strip():
             return [], 0
