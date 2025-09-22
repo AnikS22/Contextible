@@ -25,20 +25,19 @@ Transform your local AI models into personal assistants that truly know you! Con
 git clone https://github.com/AnikS22/Contextible.git
 cd Contextible/contextvault
 
-# 2. One-command installation
+# 2. One-command installation (includes seamless setup)
 python install_simple.py
+# During installation, you'll be asked if you want seamless integration
+# Choose 'y' to make Ollama Dashboard work with context injection automatically
 
 # 3. Add some context about yourself
 python contextible.py
 # Type: add "My name is Alex and I'm a Python developer"
 # Type: exit
 
-# 4. IMPORTANT: Start the proxy for AI memory (in a NEW terminal)
-ollama serve                    # Make sure Ollama is running
-python scripts/ollama_proxy.py  # Start Contextible proxy
-
-# 5. Test it! Your AI now remembers you!
-# Open Ollama app and ask: "What do you know about me?"
+# 4. Test it! Your AI now remembers you!
+# Open Ollama Dashboard and ask: "What do you know about me?"
+# (If you chose seamless integration, it works automatically!)
 ```
 
 **That's it!** Your AI now has persistent memory! 🎉

@@ -106,6 +106,64 @@ def setup_database():
         print(f"❌ Database setup failed: {e}")
         return False
 
+def setup_seamless_integration():
+    """Set up seamless Ollama integration with user consent."""
+    print("\n🤖 Seamless Ollama Integration Setup")
+    print("=" * 50)
+    print("This will configure Ollama to work seamlessly with Contextible.")
+    print("Your AI models will automatically get context injection!")
+    print()
+    print("What this does:")
+    print("• Stops Ollama on port 11434 (default)")
+    print("• Starts Ollama on port 11436 (alternative)")
+    print("• Starts Contextible proxy on port 11434")
+    print("• Ollama Dashboard works normally with context injection")
+    print()
+    print("Benefits:")
+    print("• Ollama Dashboard works exactly as before")
+    print("• All AI models get context injection automatically")
+    print("• AI will know you and remember context")
+    print("• Completely transparent - no configuration needed")
+    print()
+    print("⚠️  IMPORTANT: This will temporarily stop your Ollama server")
+    print("   and restart it on a different port. This is completely safe.")
+    print()
+    
+    while True:
+        choice = input("🤔 Would you like to set up seamless integration? (y/n): ").lower().strip()
+        if choice in ['y', 'yes']:
+            print("\n🚀 Setting up seamless integration...")
+            try:
+                # Import and run the seamless setup
+                import subprocess
+                import sys
+                from pathlib import Path
+                
+                script_path = Path(__file__).parent / "scripts" / "seamless_ollama_setup.py"
+                result = subprocess.run([sys.executable, str(script_path)], 
+                                      capture_output=True, text=True, timeout=30)
+                
+                if result.returncode == 0:
+                    print("✅ Seamless integration setup complete!")
+                    print("🎉 You can now use Ollama Dashboard normally with context injection!")
+                    return True
+                else:
+                    print(f"❌ Setup failed: {result.stderr}")
+                    print("💡 You can still use Contextible manually")
+                    return False
+                    
+            except Exception as e:
+                print(f"❌ Setup error: {e}")
+                print("💡 You can still use Contextible manually")
+                return False
+                
+        elif choice in ['n', 'no']:
+            print("\n👍 No problem! You can set up seamless integration later with:")
+            print("   python scripts/seamless_ollama_setup.py")
+            return False
+        else:
+            print("Please enter 'y' for yes or 'n' for no.")
+
 def test_installation():
     """Test that everything works."""
     print("\n🧪 Testing installation...")
@@ -161,19 +219,17 @@ def show_success():
     print("   3. Type: list")
     print("   4. Type: help")
     print()
-    print("🤖 IMPORTANT: To enable AI memory (context injection):")
-    print("   ⚠️  Without this step, your AI won't remember you!")
+    print("🤖 AI Memory Setup:")
+    print("   If you chose seamless integration above, you're all set!")
+    print("   Your AI models now have context injection automatically.")
     print()
-    print("   🎯 RECOMMENDED: Seamless Integration (Ollama Dashboard works normally)")
-    print("      python scripts/seamless_ollama_setup.py")
-    print("      • Ollama Dashboard works normally")
-    print("      • All models get context injection automatically")
-    print("      • No configuration needed!")
-    print()
-    print("   🔧 ALTERNATIVE: Manual Setup")
+    print("   🔧 Manual Setup (if you skipped seamless integration):")
     print("      1. Make sure Ollama is running: ollama serve")
     print("      2. Start the proxy: python scripts/ollama_proxy.py")
     print("      3. Use: curl http://localhost:11435/api/generate")
+    print()
+    print("   🎯 Set up seamless integration later:")
+    print("      python scripts/seamless_ollama_setup.py")
     print()
     print("💡 Pro tip: The CLI will create the database automatically")
     print("   when you first run it, so don't worry if the test failed.")
@@ -200,7 +256,10 @@ def main():
     # Step 4: Test installation (non-critical)
     test_result = test_installation()
     
-    # Step 5: Show success (regardless of test result)
+    # Step 5: Setup seamless integration (with user consent)
+    setup_seamless_integration()
+    
+    # Step 6: Show success (regardless of test result)
     show_success()
     
     # Return 0 for success even if test failed, since CLI works
